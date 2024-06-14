@@ -1,107 +1,73 @@
-  //Start algorithm here!
-  var text = document.getElementById('text')
-  var text2 = document.getElementById('text2')
-  var btn = document.getElementById('btn')
-  var theChoosen = document.getElementById('typeOption')
-  btn.addEventListener('click', async () => {
-    if (/^\s*$/.test(textValue) === false && /^\s*$/.test(textValue2) === false) {
-      var textValue = text.value
-      var textValue2 = text2.value
-      if (textValue.length > 0 && textValue2.length > 0) {
-        var originText = textValue
-        originText = originText.trim()
-        var nextData = text2.value
-        nextData = nextData.trim()
-        var sentence1 = originText
-        var sentence2 = nextData
-        // Remove punctuation and convert sentences to lowercase
-        sentence1 = sentence1.replace(/[^\w\s]/g, '').toLowerCase();
-        sentence2 = sentence2.replace(/[^\w\s]/g, '').toLowerCase();
-        if (theChoosen.value == 1) {
-          howClose(sentence1, sentence2)
-        }
-        else if (theChoosen.value == 2) {
-          calculateStringSimilarity(sentence1, sentence2)
-        }
-        else if (theChoosen.value == 3) {
-          isVerbatim(sentence1, sentence2)
-        }
-        else if (theChoosen.value == 4) {
-          uniqueCheck(sentence1, sentence2)
-        }
+let w
+if (typeof(Worker) !== "undefined") {
+  //Supported
+  w = new Worker('w.js');
+} else {
+  alert("Sorry! No Web Worker support... Functions May Break.")
+}
+
+
+//Start algorithm here!
+const text = document.getElementById('text')
+const text2 = document.getElementById('text2')
+const btn = document.getElementById('btn')
+const mode = document.getElementById('typeOption')
+let textV, textV2
+btn.addEventListener('click', async () => {
+  let theChoosen = parseInt(mode.value) //it could update before click
+  textV = text.value
+  textV2 = text2.value
+  if (/^\s*$/.test(textV) === false && /^\s*$/.test(textV2) === false) {
+    if (textV.length > 0 && textV2.length > 0) {
+      // Remove punctuation and convert sentences to lowercase
+      const sentence1 = textV.replace(/[^\w\d\s]/g, ' $& ').toLowerCase().trim();
+      const sentence2 = textV2.replace(/[^\w\d\s]/g, ' $& ').toLowerCase().trim();
+      if (theChoosen === 1) {
+        howClose(sentence1, sentence2)
+      }
+      else if (theChoosen === 2) {
+        calculateStringSimilarity(sentence1, sentence2)
+      }
+      else if (theChoosen === 3) {
+        isVerbatim(sentence1, sentence2)
+      }
+      else if (theChoosen === 4) {
+        uniqueCheck(sentence1, sentence2)
       }
     }
-  })
+  } else alert("For Processing, You Must Fill The 2 TextArea. Empty Spaces Or Characters Will Fail To Process.")
+})
 
-  function calculateStringSimilarity(sentence1, sentence2) {
-    try {
+function calculateStringSimilarity(sentence1, sentence2) {
+  w.addEventListener('message', msgHand)
 
-      // Split sentences into words
-      const words1 = sentence1.split(/\s+/);
-      const words2 = sentence2.split(/\s+/);
-      const matchWords = words1.filter(eachword => { console.log(words2.includes(eachword)); return words2.includes(eachword) })
-      // alert(matchWords)
-      // Calculate the similarity score based on the length of common words
-      var similarity = (matchWords.length / Math.max(words1.length, words2.length)) * 100;
-      var additional
-      var matchCount
-      matchCount = matchWords.length
-      if (matchCount !== 0) {
-        if (matchCount < 30) {
-          additional = ' and few matches were found.'
-        }
-        else {
-          additional = ' and matches found were much.'
-        }
-      }
-      else {
-        additional = ' .'
-      }
-      alert(`Match percentage: ${similarity}%` + additional)
-      //  console.log(`Matches: ${commonWords}`)
-      // text2.value = ''
-    }
-    catch (err) {
-      alert('I\'m so sorry, I couldn\'t process that. Something when wrong. ' + err)
-      text2.value = sentence2
-      text.value = sentence1
-    }
+  function msgHand(e) {
+    alert(e.data);
+    w.removeEventListener('message', msgHand)
   }
+  w.postMessage({ first: sentence1, second: sentence2, type: "calculateStringSimilarity" })
+}
 
-  function isVerbatim(sen1, sen2) {
-    if (sen1 === sen2) {
-      alert('Yes, they are absolutely the same.')
-    }
-    else {
-      alert('Nope, they are not the same.')
-    }
+function isVerbatim(sen1, sen2) {
+  if (sen1 === sen2) {
+    alert('Yes, they are absolutely the same.')
   }
-
-  function uniqueCheck(sentence1, sentence2) { //this doesn't repeat words in both sentence when matching
-    //since this checks uniquely, it will not be suitable for 1 word check, eg highlight vs high, not good. just words alone.
-    // Split sentences into words
-    const words1 = sentence1.split(/\s+/);
-    const words2 = sentence2.split(/\s+/);
-    // Calculate the intersection of unique words between the two sentences
-    const uniqueWords1 = new Set(words1);
-    const uniqueWords2 = new Set(words2);
-    const commonWords = [...uniqueWords1].filter(word => uniqueWords2.has(word));
-
-    // Calculate the similarity score based on the length of common words
-    const similarity = (commonWords.length / Math.max(words1.length, words2.length)) * 100;
-    alert(`Uniquely, they are ${similarity}% in similarity.`)
+  else {
+    alert('Nope, they are not the same.')
   }
+}
 
-  function howClose(sen1, sen2) {
+function uniqueCheck(sentence1, sentence2) {
+  w.addEventListener('message', msgHand)
 
-    /*Work here*/
-
-
-
-    // if (similarity === 100) {
-    //   alert('So close that they are the same. A clear 100%.')
-    // }
-    // else {
-    //   alert(`They are ${similarity}% close.`)
-    // }
+  function msgHand(e) {
+    alert(e.data);
+    w.removeEventListener('message', msgHand)
   }
+  w.postMessage({ first: sentence1, second: sentence2, type: "uniqueCheck" })
+}
+
+function howClose(sen1, sen2) {
+
+  alert("Sorry, Not available.")
+}
