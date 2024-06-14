@@ -60,3 +60,43 @@ body {
   margin-bottom: 10%;
   border-radius: 0.5rem;
 }
+
+.loader {
+  border: 0.3rem solid floralwhite;
+  /* Light grey */
+  border-top: 0.3rem solid #8300FF;
+  /* Blue */
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  left: 50%;
+  top: 50%;
+  position: fixed;
+  animation: spin 2s linear infinite;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  /* Dark semi-transparent background */
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  /* Ensure it covers all content */
+}
+
+@keyframes spin {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+
+  }
+}

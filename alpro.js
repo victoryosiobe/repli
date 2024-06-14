@@ -13,7 +13,8 @@ const text2 = document.getElementById('text2')
 const btn = document.getElementById('btn')
 const mode = document.getElementById('typeOption')
 let textV, textV2
-btn.addEventListener('click', async () => {
+btn.addEventListener('click', () => {
+  showLoader()
   let theChoosen = parseInt(mode.value) //it could update before click
   textV = text.value
   textV2 = text2.value
@@ -36,6 +37,7 @@ btn.addEventListener('click', async () => {
       }
     }
   } else alert("For Processing, You Must Fill The 2 TextArea. Empty Spaces Or Characters Will Fail To Process.")
+  hideLoader()
 })
 
 function calculateStringSimilarity(sentence1, sentence2) {
@@ -70,4 +72,12 @@ function uniqueCheck(sentence1, sentence2) {
 function howClose(sen1, sen2) {
 
   alert("Sorry, Not available.")
+}
+
+function showLoader() {
+  document.querySelector('.overlay').style.display = 'flex';
+}
+
+function hideLoader() {
+  document.querySelector('.overlay').style.display = 'none';
 }
