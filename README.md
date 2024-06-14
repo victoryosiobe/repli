@@ -1,6 +1,5 @@
 # Repli
-
-Check the how close texts are with repli.
+Similar text checker.
 
 # Currently, you can:
 - Find measures of how similar 2 texts are.
